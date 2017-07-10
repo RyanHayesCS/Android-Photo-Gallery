@@ -27,7 +27,7 @@
         <activity android:name=".PhotoPageActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"/>
 
-        <service android:name=".PollService"/>
+        <service android:name=".NotificationService"/>
 
     </application>
 

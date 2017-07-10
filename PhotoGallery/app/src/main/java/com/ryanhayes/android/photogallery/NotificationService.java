@@ -12,12 +12,12 @@ import android.net.ConnectivityManager;
  * it is capable of being used to send notifications
  */
 
-public class PollService extends IntentService {
+public class NotificationService extends IntentService {
 
-    private static final String TAG = "PollService";
+    private static final String TAG = "NotificationService";
     public static final String ACTION_SHOW_NOTIFICATION = "com.ryanhayes.android.photogallery.SHOW_NOTIFICATION";
 
-    public PollService() {
+    public NotificationService() {
         super(TAG);
     }
 
