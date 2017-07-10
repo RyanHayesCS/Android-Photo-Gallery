@@ -20,6 +20,8 @@ import java.util.List;
  */
 
 public class FlickrFetcher {
+    public static final String PREF_SEARCH_QUERY = "searchQuery";
+    public static final String PREF_LAST_RESULT_ID = "lastResultId";
 
     public static final String TAG = "FlickrFetcher";
     public static final String API_KEY = "3af236da2ffa9e6a821d3eb871aab756";
@@ -54,9 +56,9 @@ public class FlickrFetcher {
         return new String(getUrlBytes(urlSpec));
     }
 
-    public List<FlickerGalleryItem> fetchItems(){
+    public List<FlickrGalleryItem> fetchItems(){
 
-        List<FlickerGalleryItem> items = new ArrayList<>();
+        List<FlickrGalleryItem> items = new ArrayList<>();
 
         try {
             String url = Uri.parse("https://api.flickr.com/services/rest/")
@@ -79,7 +81,7 @@ public class FlickrFetcher {
         return items;
     }
 
-    private void parseItems(List<FlickerGalleryItem> items, JSONObject jsonBody)
+    private void parseItems(List<FlickrGalleryItem> items, JSONObject jsonBody)
             throws IOException, JSONException
     {
         JSONObject photosJsonObject = jsonBody.getJSONObject("photos");
@@ -88,7 +90,7 @@ public class FlickrFetcher {
         for(int i = 0; i < photoJsonArray.length();++i){
             JSONObject photoJsonObject = photoJsonArray.getJSONObject(i);
 
-            FlickerGalleryItem item = new FlickerGalleryItem();
+            FlickrGalleryItem item = new FlickrGalleryItem();
             item.setId(photoJsonObject.getString("id"));
             item.setCaption(photoJsonObject.getString("title"));
 
@@ -97,6 +99,7 @@ public class FlickrFetcher {
             }
 
             item.setURL(photoJsonObject.getString("url_s"));
+            item.setOwner(photoJsonObject.getString("owner"));
             items.add(item);
         }
     }

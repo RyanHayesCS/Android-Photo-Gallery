@@ -1,15 +1,33 @@
 package com.ryanhayes.android.photogallery;
 
+import android.net.Uri;
+
 /**
  * Created by Ryan Hayes on 7/8/2017.
  */
 
-public class FlickerGalleryItem {
+public class FlickrGalleryItem {
 
     private String mCaption;
     private String mId;
     private String mURL;
+    private String mOwner;
 
+    public String getOwner() {
+        return mOwner;
+    }
+
+    public void setOwner(String mOwner) {
+        this.mOwner = mOwner;
+    }
+
+    public Uri getPhotoPageUri(){
+        return Uri.parse("http://www.flickr.com/photos/")
+                .buildUpon()
+                .appendPath(mOwner)
+                .appendPath(mId)
+                .build();
+    }
 
     public String getCaption() {
         return mCaption;
@@ -26,7 +44,6 @@ public class FlickerGalleryItem {
     public void setId(String mId) {
         this.mId = mId;
     }
-
 
     public String getURL() {
         return mURL;

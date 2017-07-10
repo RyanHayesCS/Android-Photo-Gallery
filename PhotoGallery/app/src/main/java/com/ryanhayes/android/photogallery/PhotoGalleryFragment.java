@@ -1,6 +1,6 @@
 package com.ryanhayes.android.photogallery;
 
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,13 +21,14 @@ import java.util.List;
  * Created by Ryan Hayes on 7/8/2017.
  */
 
-public class PhotoGalleryFragment extends android.support.v4.app.Fragment {
+public class PhotoGalleryFragment extends VisibleFragment {
 
     private static final int COLUMNS = 3;
     private static final String TAG = "PhotoGalleryFragment";
+    int mPage = 0;
 
     private RecyclerView mPhotoRecyclerView;
-    private List<FlickerGalleryItem> mItems = new ArrayList<>();
+    private List<FlickrGalleryItem> mItems = new ArrayList<>();
 
     public static PhotoGalleryFragment newInstance(){
         return new PhotoGalleryFragment();
@@ -72,28 +73,33 @@ public class PhotoGalleryFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    private class PhotoHolder extends RecyclerView.ViewHolder{
+    private class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private ImageView mItemImageView;
+        private FlickrGalleryItem mGalleryItem;
 
         public PhotoHolder(View itemView){
             super(itemView);
 
             mItemImageView = (ImageView) itemView.findViewById(R.id.fragment_photo_gallery_image_view);
+            itemView.setOnClickListener(this);
         }
 
-        public void bindGalleryItem(FlickerGalleryItem galleryItem){
+        public void bindGalleryItem(FlickrGalleryItem galleryItem){
             Picasso.with(getActivity()).load(galleryItem.getURL()).placeholder(R.drawable.timer_icon).into(mItemImageView);
+            mGalleryItem = galleryItem;
         }
 
-        public void bindDrawable(Drawable drawable){
-            mItemImageView.setImageDrawable(drawable);
+        @Override
+        public void onClick(View v){
+            Intent i = PhotoPageActivity.newIntent(getActivity(), mGalleryItem.getPhotoPageUri());
+            startActivity(i);
         }
     }
 
     private class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder>{
-        private List<FlickerGalleryItem> mGalleryItems;
+        private List<FlickrGalleryItem> mGalleryItems;
 
-        public PhotoAdapter(List<FlickerGalleryItem> galleryItems){
+        public PhotoAdapter(List<FlickrGalleryItem> galleryItems){
             mGalleryItems = galleryItems;
         }
 
@@ -106,7 +112,7 @@ public class PhotoGalleryFragment extends android.support.v4.app.Fragment {
 
         @Override
         public void onBindViewHolder(PhotoHolder photoHolder, int position){
-            FlickerGalleryItem galleryItem = mGalleryItems.get(position);
+            FlickrGalleryItem galleryItem = mGalleryItems.get(position);
             photoHolder.bindGalleryItem(galleryItem);
         }
 
@@ -116,18 +122,16 @@ public class PhotoGalleryFragment extends android.support.v4.app.Fragment {
         }
     }
 
-    private class FetchItemsTask extends AsyncTask<Void, Void, List<FlickerGalleryItem>>{
+    private class FetchItemsTask extends AsyncTask<Void, Void, List<FlickrGalleryItem>>{
         @Override
-        protected List<FlickerGalleryItem> doInBackground(Void... params){
+        protected List<FlickrGalleryItem> doInBackground(Void... params){
             return new FlickrFetcher().fetchItems();
         }
 
         @Override
-        protected void onPostExecute(List<FlickerGalleryItem> items){
+        protected void onPostExecute(List<FlickrGalleryItem> items){
             mItems = items;
             setupAdapter();
         }
     }
-
-
 }
