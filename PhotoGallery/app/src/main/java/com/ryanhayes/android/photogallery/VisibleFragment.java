@@ -10,6 +10,8 @@ import android.util.Log;
 
 /**
  * Created by Ryan Hayes on 7/9/2017.
+ * This class is used in conjunction with the pollservice class
+ * it is used to add notification functionality to fragments
  */
 
 public abstract class VisibleFragment extends Fragment {

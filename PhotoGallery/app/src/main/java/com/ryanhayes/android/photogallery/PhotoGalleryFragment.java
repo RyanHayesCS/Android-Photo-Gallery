@@ -3,7 +3,6 @@ package com.ryanhayes.android.photogallery;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,6 +18,8 @@ import java.util.List;
 
 /**
  * Created by Ryan Hayes on 7/8/2017.
+ * This class creates a recyclerview which is used to
+ * hold photos which have been received from photo sharing sites.
  */
 
 public class PhotoGalleryFragment extends VisibleFragment {
@@ -38,12 +39,12 @@ public class PhotoGalleryFragment extends VisibleFragment {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-        new FetchItemsTask().execute();
+        new FetchItemsTask().execute();         //Run asynctask to receive photos
 
-        Handler responseHandler = new Handler();
         Log.i(TAG, "Background thread started");
     }
 
+    /*sets up recycler view*/
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle SavedInstanceState){
         View v = inflater.inflate(R.layout.fragment_photo_gallery, container, false);
@@ -51,7 +52,7 @@ public class PhotoGalleryFragment extends VisibleFragment {
         mPhotoRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_photo_gallery_recycler_view);
         mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), COLUMNS));
 
-        setupAdapter();
+        setupAdapter(); //sets up adapter which is used to hold every photo
 
         return v;
     }
@@ -73,6 +74,9 @@ public class PhotoGalleryFragment extends VisibleFragment {
         }
     }
 
+    /* A photo holder is used within the recyclerview in order to hold each
+       gallery item that is created after the retreival of the flickr resources.
+     */
     private class PhotoHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private ImageView mItemImageView;
         private FlickrGalleryItem mGalleryItem;
@@ -84,6 +88,10 @@ public class PhotoGalleryFragment extends VisibleFragment {
             itemView.setOnClickListener(this);
         }
 
+        /* This function utilizes the Picasso library as an alternative to creating
+         * a class which uses a handler to download each photo thumbnail. Picasso also
+         * handles image chacheing and preloading.
+         */
         public void bindGalleryItem(FlickrGalleryItem galleryItem){
             Picasso.with(getActivity()).load(galleryItem.getURL()).placeholder(R.drawable.timer_icon).into(mItemImageView);
             mGalleryItem = galleryItem;
@@ -96,6 +104,7 @@ public class PhotoGalleryFragment extends VisibleFragment {
         }
     }
 
+    /*Creates a photoadapter which containers PhotoHolders*/
     private class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder>{
         private List<FlickrGalleryItem> mGalleryItems;
 
@@ -103,6 +112,7 @@ public class PhotoGalleryFragment extends VisibleFragment {
             mGalleryItems = galleryItems;
         }
 
+        /*Use gallery item layout to hold each photo*/
         @Override
         public PhotoHolder onCreateViewHolder(ViewGroup viewGroup, int viewType){
             LayoutInflater inflater = LayoutInflater.from(getActivity());
@@ -110,6 +120,7 @@ public class PhotoGalleryFragment extends VisibleFragment {
             return new PhotoHolder(view);
         }
 
+        /* This method binds each gallery item to a photo holder*/
         @Override
         public void onBindViewHolder(PhotoHolder photoHolder, int position){
             FlickrGalleryItem galleryItem = mGalleryItems.get(position);
@@ -122,6 +133,7 @@ public class PhotoGalleryFragment extends VisibleFragment {
         }
     }
 
+    /*This asynctask is used to seatblish an httpconnect to Flickr by using the FlickrFetcher class*/
     private class FetchItemsTask extends AsyncTask<Void, Void, List<FlickrGalleryItem>>{
         @Override
         protected List<FlickrGalleryItem> doInBackground(Void... params){

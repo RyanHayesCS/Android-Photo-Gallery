@@ -4,6 +4,7 @@ import android.net.Uri;
 
 /**
  * Created by Ryan Hayes on 7/8/2017.
+ * This class is used to create objects for each photo received from flickr
  */
 
 public class FlickrGalleryItem {
@@ -21,6 +22,9 @@ public class FlickrGalleryItem {
         this.mOwner = mOwner;
     }
 
+    /* Creates a uri with the given information
+     * this uri can be used to connect to the upload page
+     */
     public Uri getPhotoPageUri(){
         return Uri.parse("http://www.flickr.com/photos/")
                 .buildUpon()

@@ -14,6 +14,8 @@ import android.widget.ProgressBar;
 
 /**
  * Created by Ryan Hayes on 7/9/2017.
+ * This class is used to display a photo's webpage
+ * it utilizes a webview to do so
  */
 
 public class PhotoPageFragment extends VisibleFragment {
@@ -39,6 +41,11 @@ public class PhotoPageFragment extends VisibleFragment {
         mUri = getArguments().getParcelable(ARG_URI);
     }
 
+    /* The meat of the class, onCreateView does two things:
+     * It creates a webview and uses it to connect to a photo's url.
+     * It creates a progress bar which is used to show how far along the page's
+     * loading has come.
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View v = inflater.inflate(R.layout.fragment_photo_page, container, false);
@@ -48,27 +55,27 @@ public class PhotoPageFragment extends VisibleFragment {
 
         mWebView = (WebView) v.findViewById(R.id.fragment_photo_page_web_view);
         mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.setWebChromeClient(new WebChromeClient(){
-            public void onProgressChanged(WebView webView, int newProgress){
-                if(newProgress == 100){
-                    mProgressBar.setVisibility(View.GONE);
+        mWebView.setWebChromeClient(new WebChromeClient(){  //a fancier view that allows more ui
+            public void onProgressChanged(WebView webView, int newProgress){ //editing
+                if(newProgress == 100){                     //if the page has loaded
+                    mProgressBar.setVisibility(View.GONE);  //remove the progress bar
                 }else{
-                    mProgressBar.setVisibility(View.VISIBLE);
+                    mProgressBar.setVisibility(View.VISIBLE);  //otherwise keep updating the progress
                     mProgressBar.setProgress(newProgress);
                 }
             }
 
-            public void onReceivedTitle(WebView webView, String title){
-                AppCompatActivity activity = (AppCompatActivity) getActivity();
-                activity.getSupportActionBar().setSubtitle(title);
-            }
+            public void onReceivedTitle(WebView webView, String title){    //used to display
+                AppCompatActivity activity = (AppCompatActivity) getActivity(); //the title and
+                activity.getSupportActionBar().setSubtitle(title);              //description of the photo
+            }                                                                   //in the toolbar
         });
         mWebView.setWebViewClient(new WebViewClient(){
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request){
                 return false;
             }
         });
-        mWebView.loadUrl(mUri.toString());
+        mWebView.loadUrl(mUri.toString());  //connect to url
         return v;
     }
 }

@@ -17,6 +17,9 @@ import java.util.List;
 
 /**
  * Created by Ryan Hayes on 7/8/2017.
+ * This class is used to connect to Flickr
+ * It receives the latest public uploads via a restful service
+ * and then parses each upload into a FlickrGalleryItem object
  */
 
 public class FlickrFetcher {
@@ -26,6 +29,10 @@ public class FlickrFetcher {
     public static final String TAG = "FlickrFetcher";
     public static final String API_KEY = "3af236da2ffa9e6a821d3eb871aab756";
 
+    /* Create a URL from a string
+       Then open a connection to that url
+       makes sure connection is good
+     */
     public byte[] getUrlBytes(String urlSpec) throws IOException{
         URL url = new URL(urlSpec);
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
@@ -52,10 +59,14 @@ public class FlickrFetcher {
         }
     }
 
+    /* Used to convert byte array returned by getUrlBytes into a string*/
     public String getUrlString(String urlSpec) throws IOException{
         return new String(getUrlBytes(urlSpec));
     }
 
+    /* Retrieve items from flickr connection by
+       isomg a restful service
+    */
     public List<FlickrGalleryItem> fetchItems(){
 
         List<FlickrGalleryItem> items = new ArrayList<>();
@@ -71,8 +82,8 @@ public class FlickrFetcher {
                     .build().toString();
             String jsonString = getUrlString(url);
             Log.i(TAG, "Recieved JSON: " + jsonString);
-            JSONObject jsonBody = new JSONObject(jsonString);
-            parseItems(items, jsonBody);
+            JSONObject jsonBody = new JSONObject(jsonString);   //store resource in json object
+            parseItems(items, jsonBody);                        // (format of service)
         }catch (JSONException je){
             Log.e(TAG, "Failed to parse JSON", je);
         }catch(IOException ioe){
@@ -81,6 +92,9 @@ public class FlickrFetcher {
         return items;
     }
 
+    /* Parse json resource into uniform objects.
+       makes use of jsonparser.
+     */
     private void parseItems(List<FlickrGalleryItem> items, JSONObject jsonBody)
             throws IOException, JSONException
     {

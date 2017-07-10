@@ -7,6 +7,9 @@ import android.net.ConnectivityManager;
 
 /**
  * Created by Ryan Hayes on 7/9/2017.
+ * This class is used in the background as a means of handing
+ * network connectivity messages
+ * it is capable of being used to send notifications
  */
 
 public class PollService extends IntentService {
