@@ -64,8 +64,7 @@ public class FlickrFetcher {
         return new String(getUrlBytes(urlSpec));
     }
 
-    /* Retrieve items from flickr connection by
-       isomg a restful service
+    /* Retrieve items from flickr connection via restful service
     */
     public List<FlickrGalleryItem> fetchItems(){
 
