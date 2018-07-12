@@ -133,7 +133,7 @@ public class PhotoGalleryFragment extends VisibleFragment {
         }
     }
 
-    /*This asynctask is used to seatblish an httpconnect to Flickr by using the FlickrFetcher class*/
+    /*This asynctask is used to establish an httpconnect to Flickr by using the FlickrFetcher class*/
     private class FetchItemsTask extends AsyncTask<Void, Void, List<FlickrGalleryItem>>{
         @Override
         protected List<FlickrGalleryItem> doInBackground(Void... params){
